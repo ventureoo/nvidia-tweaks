@@ -126,3 +126,5 @@ In this case it is necessary to perform an installation of a separate compositor
 For Xfce, you must get rid of the problematic default compositor before using Picom:
 
 ``xfce-query -c xfwm4 -p /general/use_compositing -s false``
+
+P.S. All of the above only makes sense for the X11 sessions. Wayland implies the use of compositing as a built-in feature.
