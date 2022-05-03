@@ -98,3 +98,31 @@ There are also tweaks as an option:
   - **Works only for laptops.**
   
 All of the optional tweaks mentioned above should be applied according to your preferences. For a package from the AUR, they are applied through the corresponding options in PKGBUILD. For other distributions this will probably require editing `/etc/modprobe.d/nvidia-tweaks.conf` and adding the appropriate parameters.
+
+## Some tips from me
+
+### Do not use the Force Composition Pipeline to eliminate with tearing
+
+There are two ways to deal with tearing in Linux: 
+
+1) Use a compositor with properly working Vsync frame synchronization (something all working environments are trying to do at the moment)
+2) Use driver options that allow you to fix it (like the Force (Full) Composition Pipeline).
+
+Some people advise doing the second way. Personally, I don't agree with that.
+Yes, the Force Composition Pipeline does fix the tearing, but you do pay some overhead.
+Namely, you get the input lag problem, since this option contributes to a massive increase in latency everywhere you can.
+This is especially sensitive for places like games, because that is where the difference is best felt.
+In addition, it also causes problems with resetting the frequencies of your GPU.
+It is verified that the Force Composition Pipeline increases the idle time for the driver to change its level of performance (See https://forums.developer.nvidia.com/t/if-you-have-gpu-clock-boost-problems-please-try-gl-experimentalperfstrategy-1/71762/14)
+
+So I recommend everyone to use the first way whenever possible.
+At the moment, all modern DEs and consequently the composers attached to them are good at solving this issue.
+Particularly GNOME and since version 5.21 of Plasma no longer have any problems (the main thing is to switch the rendering backend to OpenGL). 
+However, for all less modern environments such as Xfce and Mate, and of course all window managers, the problem is still relevant.
+In this case it is necessary to perform an installation of a separate compositor like Picom. Now it is good enough, the most important thing is to add it to the autostart with the following options to start it:
+
+``picom --experimental-backends --backend glx --vsync``
+
+For Xfce, you must get rid of the problematic default compositor before using Picom:
+
+``xfce-query -c xfwm4 -p /general/use_compositing -s false``
