@@ -4,8 +4,6 @@
 
 nvidia-tweaks is a set of tweaks and workarounds for the Linux version of the closed NVIDIA driver. It will allow you to fix some problems related to the driver and can potentially improve performance (Read about the driver module options).
 
-**DISCLAIMER: Don't expect much from this project. The driver is still closed and distributed under the NVIDIA license. There is no way to make your own changes directly to the driver code, therefore all our ability to improve it is severely limited.**
-
 In other words, this project doesn't contain anything you can't do yourself, but just simplifies the process and stores a lot of information.
 
 ## Installation
