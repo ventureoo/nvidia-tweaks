@@ -47,7 +47,6 @@ https://github.com/keylase/nvidia-patch
 
 First, we configure the kernel modules of the NVIDIA driver (`nvidia.conf`). The thing is that by default, not all parameters are enabled in the driver module. Including the following things we need to change:
 
-- NVreg_EnablePCIeGen3=1 (Default 0) - Enabling full PCIe 3.0 support. If the system supports this 8GT high speed bus then enable it with this module option flag. **If this feature is enabled but the system does not support Gen 3.0, system behavior can become unstable and unstable.** However, almost the vast majority already have motherboards with PCIe 3 or higher. So this parameter can be considered relatively safe. However, if you want to protect yourself and check your own PCIe version run the command: `nvidia-settings --query=PCIEGen`. If the output of the command is the number "3", then everything is fine.
 - NVreg_UsePageAttributeTable=1 (Default 0) - Activating the better memory management method (PAT).
 The PAT method creates a partition type table at a specific address mapped inside the register and utilizes the memory architecture and instruction set more efficiently and faster.
 If your system can support this feature, it should improve CPU performance. To check if your processor is supported by PAT, use the command: `grep -E '^flags.+ pat( |$)' /proc/cpuinfo`.
