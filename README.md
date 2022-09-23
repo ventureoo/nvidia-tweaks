@@ -149,3 +149,4 @@ These environment variables should be added to your ``~/.bashrc`` or ``~/.zshrc`
 Not all of them are useful if you are not using the wlroots-based window manager.
 I would also recommend you to avoid Chromium (without Ozon)/Electron-based applications, as they can all be very unstable in Wayland on NVIDIA. Browsers on QtWebEngine such as qutebrowser unfortunately do not work either.
 
+For the wlroots Vulkan backend to work, also make sure that you are using the NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
