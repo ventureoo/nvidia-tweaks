@@ -125,3 +125,27 @@ For Xfce, you must get rid of the problematic default compositor before using Pi
 ``xfce-query -c xfwm4 -p /general/use_compositing -s false``
 
 P.S. All of the above only makes sense for the X11 sessions. Wayland implies the use of compositing as a built-in feature.
+
+## Wayland + NVIDIA
+
+Currently, starting with driver branch 515 and higher, NVIDIA has support for GBM API,
+which made it possible to run Sway and wlroots-like window managers, and also
+significantly improved Wayland sessions in GNOME/KDE Plasma. However, this implementation still has a number of problems, the main one being flickering when using XWayland/OpenGL acceleration in applications.
+As described [here](https://forums.developer.nvidia.com/t/nvidia-495-on-sway-tutorial-questions-arch-based-distros/192212/78), this problem is caused by the fact that the NVIDIA driver only supports the new OpenGL explicit sync instead of implicit sync. So I recommend you to use only native support in Wayland applications wherever possible, and avoid OpenGL acceleration. It looks pretty ridiculous, but it's a workable solution. With the Vulkan backend in Sway I haven't found any obvious problems with rendering. So, here's a set of environment variables to help you survive on NVIDIA using Wayland:
+
+```
+export SDL_VIDEODRIVER=wayland
+export XDG_SESSION_TYPE=wayland
+export QT_QPA_PLATFORM=wayland
+export MOZ_ENABLE_WAYLAND=1
+export GBM_BACKEND=nvidia-drm
+export __GLX_VENDOR_LIBRARY_NAME=nvidia
+export WLR_NO_HARDWARE_CURSORS=1 
+export WLR_RENDERER=vulkan
+export KITTY_ENABLE_WAYLAND=1
+```
+
+These environment variables should be added to your ``~/.bashrc`` or ``~/.zshrc``, depending on the shell you are using. 
+Not all of them are useful if you are not using the wlroots-based window manager.
+I would also recommend you to avoid Chromium (without Ozon)/Electron-based applications, as they can all be very unstable in Wayland on NVIDIA. Browsers on QtWebEngine such as qutebrowser unfortunately do not work either.
+
