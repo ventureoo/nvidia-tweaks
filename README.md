@@ -130,18 +130,17 @@ P.S. All of the above only makes sense for the X11 sessions. Wayland implies the
 
 Currently, starting with driver branch 515 and higher, NVIDIA has support for GBM API,
 which made it possible to run Sway and wlroots-like window managers, and also
-significantly improved Wayland sessions in GNOME/KDE Plasma. However, this implementation still has a number of problems, the main one being flickering when using XWayland/OpenGL acceleration in applications.
-As described [here](https://forums.developer.nvidia.com/t/nvidia-495-on-sway-tutorial-questions-arch-based-distros/192212/78), this problem is caused by the fact that the NVIDIA driver only supports the new OpenGL explicit sync instead of implicit sync. So I recommend you to use only native support in Wayland applications wherever possible, and avoid OpenGL acceleration. It looks pretty ridiculous, but it's a workable solution. With the Vulkan backend in Sway I haven't found any obvious problems with rendering. So, here's a set of environment variables to help you survive on NVIDIA using Wayland:
+significantly improved Wayland sessions in GNOME/KDE Plasma. ~~However, this implementation still has a number of problems, the main one being flickering when using XWayland/OpenGL acceleration in applications.
+As described [here](https://forums.developer.nvidia.com/t/nvidia-495-on-sway-tutorial-questions-arch-based-distros/192212/78), this problem is caused by the fact that the NVIDIA driver only supports the new OpenGL explicit sync instead of implicit sync. So I recommend you to use only native support in Wayland applications wherever possible, and avoid OpenGL acceleration. It looks pretty ridiculous, but it's a workable solution. With the Vulkan backend in Sway I haven't found any obvious problems with rendering.~~ The information above is out of date. Artifacts and blinks have been fixed in sway-git/wlroots-git, please build them from AUR and install the latest driver (525+). There is no need to use Vulkan. I would also like to point out that GNOME Wayland and Plasma Wayland are now working at a pretty good level, it's not perfect, but progress is significant. So, here's a set of environment variables to help you  on NVIDIA using Wayland:
 
 ```
-export SDL_VIDEODRIVER=wayland
+export SDL_VIDEODRIVER=wayland # Can break some native games
 export XDG_SESSION_TYPE=wayland
 export QT_QPA_PLATFORM=wayland
 export MOZ_ENABLE_WAYLAND=1
 export GBM_BACKEND=nvidia-drm
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export WLR_NO_HARDWARE_CURSORS=1 
-export WLR_RENDERER=vulkan
 export KITTY_ENABLE_WAYLAND=1
 ```
 
