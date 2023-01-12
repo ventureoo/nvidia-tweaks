@@ -181,7 +181,7 @@ https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvaria
 
 **Note:** I'm not entirely sure how relevant this variable is right now.
 
-``__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1`` - disables OpenGL/Vulkan shader cache limit (``~/.cache/nvidia` by default).  Recommended for modern games and DXVK 2.0+, where the cache can reach more than a gigabyte. 
+``__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1`` - disables OpenGL/Vulkan shader cache limit (``~/.cache/nvidia`` by default).  Recommended for modern games and DXVK 2.0+, where the cache can reach more than a gigabyte. 
 
 **WARNING:** I strongly advise against specifying the above environment variables for the whole system.
 Please specify them for specific applications/games with nvidia-settings or using Lutris/Steam.
