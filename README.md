@@ -149,3 +149,39 @@ Not all of them are useful if you are not using the wlroots-based window manager
 I would also recommend you to avoid Chromium (without Ozon)/Electron-based applications, as they can all be very unstable in Wayland on NVIDIA. ~~Browsers on QtWebEngine such as qutebrowser unfortunately do not work either.~~ QtWebEngine works if you use ``QT_QUICK_BACKEND=software`` environment variable.
 
 For the wlroots Vulkan backend to work, also make sure that you are using the NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
+
+
+## Environment variables
+
+The NVIDIA driver has some specific environment variables. I will not list the technical specifics of how they work, I will just tell you about the effect they can have, more details you will learn if you follow the links:
+
+``__GL_THREADED_OPTIMIZATIONS=1`` (Off by default) - Enable multi-threaded OpenGL processing. The analog of Mesa's ``mesa_glthread`` variable.
+Use selectively for native games/applications, because sometimes it can cause performance regression [1], [2]. Some games may not run with this variable at all (e.g. some native parts of Metro). Note that for some applications this environment variable is already used in the default NVIDIA profile supplied with the driver (``/usr/share/nvidia/nvidia-application-profiles-525.78.01-rc`` for example).
+
+[1] - https://www.phoronix.com/review/nvidia_threaded_opts (a very old benchmark)
+
+[2] - https://www.phoronix.com/review/nvidia-t2015-optimizations
+
+``__GL_MaxFramesAllowed=1`` (Default value is 2?) - Roughly speaking, it sets the type of frame buffering by the driver. You can specify "3" (Triple buffering) for more FPS or better performance in applications/games with VSync. I recommend to try "1". It can noticeably decrease FPS value in games, but in return you will get better rendering delays and real physical response, because the frame will be displayed to you immediately on the screen without unnecessary processing steps. This hack was used in some compositors to improve latency [1][2][3][4].
+
+[1] - https://github.com/yshui/picom/pull/641
+
+[2] - https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/1269
+
+[3] - https://forums.developer.nvidia.com/t/how-to-turn-on-low-latency-mode-max-pre-render-frames-on-linux/108353
+
+[4] - https://phabricator.kde.org/D19867
+
+``__GL_YIELD="USLEEP"`` (Unset by default) - Pretty specific parameter with several possible values.
+Most interestingly, the ``USLEEP`` value can potentially reduce latency and CPU load [1]. 
+More information can be found in the driver documentation:
+https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvariables.html
+
+[1] - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925528
+
+**Note:** I'm not entirely sure how relevant this variable is right now.
+
+``__GL_SHADER_DISK_CACHE_SKIP_CLEANUP=1`` - disables OpenGL/Vulkan shader cache limit (``~/.cache/nvidia` by default).  Recommended for modern games and DXVK 2.0+, where the cache can reach more than a gigabyte. 
+
+**WARNING:** I strongly advise against specifying the above environment variables for the whole system.
+Please specify them for specific applications/games with nvidia-settings or using Lutris/Steam.
