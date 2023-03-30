@@ -185,3 +185,29 @@ https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvaria
 
 **WARNING:** I strongly advise against specifying the above environment variables for the whole system.
 Please specify them for specific applications/games with nvidia-settings or using Lutris/Steam.
+
+## GSP firmware
+
+GSP (GPU System Processor) - this is a special chip which is present on NVIDIA video cards starting from Turing and above, which offloads GPU initialization and control tasks, which are usually performed on CPU. This should improve performance and reduce the load on the CPU.
+
+To check if the GSP firmware is currently in use, use the following command:
+
+```
+ nvidia-smi -q | grep GSP
+```
+
+By default, GSP firmware is enabled only for a limited number of GPUs. But if you have GPU of Turing generation and above, you can also force their use via the parameter for the ``NVreg_EnableGpuFirmware=1`` kernel module. Add this parameter as we did above with others, after rebooting you should get the following output:
+
+```
+GSP Firmware Version                  : 530.41.03
+```
+
+(the output may differ depending on the driver version)
+
+**WARNING:** I strongly suggest forcing the use of GSP firmware only on the most recent driver, as the first releases with its support may contain certain problems. Only starting from 530 you will have support for suspend and resume when using GSP firmware. This feature can also work badly on PRIME configurations, so please check dmesg logs for errors if you want to use this.
+
+See also:
+
+https://www.techpowerup.com/291088/nvidia-unlocks-gpu-system-processor-gsp-for-improved-system-performance
+
+https://download.nvidia.com/XFree86/Linux-x86_64/530.41.03/README/gsp.html
