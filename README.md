@@ -211,3 +211,12 @@ See also:
 https://www.techpowerup.com/291088/nvidia-unlocks-gpu-system-processor-gsp-for-improved-system-performance
 
 https://download.nvidia.com/XFree86/Linux-x86_64/530.41.03/README/gsp.html
+
+## Resizable Bar
+
+Starting with version 530.30.02 NVIDIA introduced support for the Resizeble Bar. Previously, we already had a third-party patch for this (see the patches directory), but it also required to patch for kernel. Although this change was not documented for some reason, we now have the ``NVreg_EnableResizableBar`` prameter which is disabled by default. Keep in mind that for Resize Bar to work properly, you not only need a GPU that supports it (it is officially supported since Ampere), but also an compatible motherboard.
+
+To make sure that your GPU actually supports this, go to nvidia-settings, select your GPU, and look in the ``Resizable Bar`` column. If it says "Yes", that's all right and you can use the kernel parameter specified above: ``NVreg_EnableResizableBar=1``.
+(P.S. For some reason, the ``Resizable Bar`` column is not shown in nvidia-settings in the Wayland session)
+
+
