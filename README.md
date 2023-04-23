@@ -172,11 +172,12 @@ Use selectively for native games/applications, because sometimes it can cause pe
 [4] - https://phabricator.kde.org/D19867
 
 ``__GL_YIELD="USLEEP"`` (Unset by default) - Pretty specific parameter with several possible values.
-Most interestingly, the ``USLEEP`` value can potentially reduce latency and CPU load [1]. 
+Most interestingly, the ``USLEEP`` value can potentially reduce latency and CPU load [1][2]. 
 More information can be found in the driver documentation:
 https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvariables.html
 
 [1] - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925528
+[2] - https://aweirdimagination.net/2020/05/24/100-cpu-usage-in-games-with-nvidia-linux-drivers/
 
 **Note:** I'm not entirely sure how relevant this variable is right now.
 
