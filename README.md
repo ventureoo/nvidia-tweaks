@@ -138,7 +138,7 @@ As described [here](https://forums.developer.nvidia.com/t/nvidia-495-on-sway-tut
 ```
 export SDL_VIDEODRIVER=wayland # Can break some native games
 export XDG_SESSION_TYPE=wayland
-export QT_QPA_PLATFORM=wayland
+export QT_QPA_PLATFORM="wayland;xcb"
 export MOZ_ENABLE_WAYLAND=1
 export GBM_BACKEND=nvidia-drm
 export WLR_NO_HARDWARE_CURSORS=1 
