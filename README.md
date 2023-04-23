@@ -120,7 +120,7 @@ In this case it is necessary to perform an installation of a separate compositor
 
 ``picom --experimental-backends --backend glx --vsync``
 
-**Note:** --experimental-backends is not required as of v10 picom. 
+**Note:** ``--experimental-backends`` is not required as of v10 picom. 
 
 For Xfce, you must get rid of the problematic default compositor before using Picom:
 
@@ -179,6 +179,7 @@ More information can be found in the driver documentation:
 https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvariables.html
 
 [1] - https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=925528
+
 [2] - https://aweirdimagination.net/2020/05/24/100-cpu-usage-in-games-with-nvidia-linux-drivers/
 
 **Note:** I'm not entirely sure how relevant this variable is right now.
