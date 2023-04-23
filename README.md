@@ -120,6 +120,8 @@ In this case it is necessary to perform an installation of a separate compositor
 
 ``picom --experimental-backends --backend glx --vsync``
 
+**Note:** --experimental-backends is not required as of v10 picom. 
+
 For Xfce, you must get rid of the problematic default compositor before using Picom:
 
 ``xfce-query -c xfwm4 -p /general/use_compositing -s false``
