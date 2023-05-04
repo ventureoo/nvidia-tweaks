@@ -151,6 +151,7 @@ I would also recommend you to avoid Chromium (without Ozon)/Electron-based appli
 
 For the wlroots Vulkan backend to work, also make sure that you are using the NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
 
+If you do not have a Wayland session to choose from in GDM, then include the ``NVreg_PreserveVideoMemoryAllocations=1`` parameter to the ones we already described above. This will also allow you to avoid some sleeping issues.
 
 ## Environment variables
 
