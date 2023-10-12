@@ -244,7 +244,19 @@ qutebrowser unfortunately do not work either.~~ QtWebEngine works if you use
 For the wlroots Vulkan backend to work, also make sure that you are using the
 NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
 
-If you do not have a Wayland session to choose from in GDM, then include the ``NVreg_PreserveVideoMemoryAllocations=1`` parameter to the ones we already described above. This will also allow you to avoid some sleeping issues.
+If you do not have a Wayland session to choose from in GDM, then include the
+``NVreg_PreserveVideoMemoryAllocations=1`` parameter to the ones we already
+described above.
+
+```
+  sudo systemctl enable nvidia-resume.service nvidia-suspend.service nvidia-hibernate.service
+```
+
+This will also allow you to avoid some sleeping issues on Wayland.
+
+Attention! On laptops with PRIME enabling
+``NVreg_PreserveVideoMemoryAllocations=1`` may cause issues with sleep.
+Therefore it is recommended to use it only on desktop PCs.
 
 ## Environment variables
 
