@@ -47,9 +47,9 @@ copy all necessary configuration files:
 ```
 git clone https://www.github.com/ventureoo/nvidia-tweaks.git
 cd nvidia-tweaks
-sudo cp -r nvidia.conf /etc/modprobe.d/nvidia-tweaks.conf
-sudo cp -r nvidia-uvm.conf /etc/modules-load.d/
-sudo cp -r 60-nvidia.rules /etc/udev/rules.d/
+sudo cp nvidia-tweaks.conf /etc/modprobe.d/nvidia-tweaks.conf
+sudo cp nvidia-uvm.conf /etc/modules-load.d/
+sudo cp 60-nvidia.rules /etc/udev/rules.d/
 ```
 
 The keylase nvidia-patch requires a separate installation. You can read about
