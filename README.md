@@ -202,6 +202,29 @@ Picom:
 P.S. All of the above only makes sense for the X11 sessions. Wayland implies
 the use of compositing as a built-in feature.
 
+## Do not use the nvidia-settings or nvidia-xconfig utilities to generate xorg.conf
+
+Note, the author strongly discourages setting up your monitors and saving the
+``xorg.conf`` config via nvidia-settings or nvidia-xconfig. This is primarily
+because it is simply not necessary. Modern versions of the X server perform
+autoconfiguration and working monitors detection themselves, besides most DEs
+in their settings already allow you to set the required display refresh rate
+and layout for external monitors, overriding all changes made in the xorg.conf
+file, which is static and cannot be adjusted to changes in your hardware
+configuration (for example, connecting a second monitor on the fly will cause
+problems, as it isn't specified in xorg.conf, and autodetection in the presence
+of a configuration file. The nvidia-settings options are also limited in
+configurations with hybrid graphics (PRIME) or Wayland sessions.
+
+More details on the issues that can arise when using nvidia-settings as a
+configurator for Xorg can be found here:
+
+https://unix.stackexchange.com/questions/697517/how-to-correlate-xorg-conf-config-for-nvidia-gpu-with-xrandr-detected-screens/697553#697553
+
+If, however, you are a user of tiling window managers (WM), where there are no
+convenient out-of-the-box customization tools, the author recommends that you
+use tools such as xrandr and [picom](https://github.com/yshui/picom).
+
 ## Wayland + NVIDIA
 
 Currently, starting with driver branch 515 and higher, NVIDIA has support for
