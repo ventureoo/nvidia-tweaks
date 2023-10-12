@@ -224,22 +224,25 @@ good level, it's not perfect, but progress is significant. So, here's a set of
 environment variables to help you  on NVIDIA using Wayland:
 
 ```
-export SDL_VIDEODRIVER=wayland # Can break some native games
-export XDG_SESSION_TYPE=wayland
-export QT_QPA_PLATFORM="wayland;xcb"
-export MOZ_ENABLE_WAYLAND=1
-export GBM_BACKEND=nvidia-drm
-export WLR_NO_HARDWARE_CURSORS=1 
-export KITTY_ENABLE_WAYLAND=1
+SDL_VIDEODRIVER=wayland # Can break some native games
+XDG_SESSION_TYPE=wayland
+QT_QPA_PLATFORM="wayland;xcb"
+MOZ_DBUS_REMOTE=1 # For shared clipboard with Xwayland apps
+MOZ_ENABLE_WAYLAND=1
+GBM_BACKEND=nvidia-drm
+WLR_NO_HARDWARE_CURSORS=1
+KITTY_ENABLE_WAYLAND=1
+_JAVA_AWT_WM_NONREPARENTING=1
 ```
 
-These environment variables should be added to your ``~/.bashrc`` or
-``~/.zshrc``, depending on the shell you are using. Not all of them are useful
-if you are not using the wlroots-based window manager. I would also recommend
-you to avoid Chromium (without Ozon)/Electron-based applications, as they can
-all be very unstable in Wayland on NVIDIA. ~~Browsers on QtWebEngine such as
-qutebrowser unfortunately do not work either.~~ QtWebEngine works if you use
-``QT_QUICK_BACKEND=software`` environment variable.
+It is best to place these variables in ``/etc/environment`` for greater
+reliability. This should also work regardless of the shell or distribution
+used. Not all of them are useful if you are not using the wlroots-based window
+manager. I would also recommend you to avoid Chromium (without
+Ozon)/Electron-based applications, as they can all be very unstable in Wayland
+on NVIDIA. ~~Browsers on QtWebEngine such as qutebrowser unfortunately do not
+work either.~~ QtWebEngine works if you use ``QT_QUICK_BACKEND=software``
+environment variable.
 
 For the wlroots Vulkan backend to work, also make sure that you are using the
 NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
