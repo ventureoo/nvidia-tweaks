@@ -178,7 +178,10 @@ sensitive for places like games, because that is where the difference is best
 felt. In addition, it also causes problems with resetting the frequencies of
 your GPU. It is verified that the Force Composition Pipeline increases the idle
 time for the driver to change its level of performance (See
-https://forums.developer.nvidia.com/t/if-you-have-gpu-clock-boost-problems-please-try-gl-experimentalperfstrategy-1/71762/14)
+https://forums.developer.nvidia.com/t/if-you-have-gpu-clock-boost-problems-please-try-gl-experimentalperfstrategy-1/71762/14).
+Another issue in the latest driver versions is that
+ForceFullCompositionPipeline breaks VK_KHR_present_wait, which affects many
+games (See: https://github.com/ValveSoftware/Proton/issues/6869).
 
 So I recommend everyone to use the first way whenever possible. At the moment,
 all modern DEs and consequently the composers attached to them are good at
