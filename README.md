@@ -398,3 +398,178 @@ that's all right and you can use the kernel parameter specified above:
 (P.S. For some reason, the ``Resizable Bar`` column is not shown in
 nvidia-settings in the Wayland session)
 
+## Hybrid graphics (NVIDIA Optimus)
+
+All sorts of fun :)
+
+First, let's understand what hybrid graphics are (Of course, technical details
+are not something everyone wants to go into, but it is necessary for further
+understanding).  Hybrid graphics is a hardware configuration in which you have
+two graphics cards that can work in tandem with each other. This approach is
+mainly found in laptops where you have integrated graphics (iGPU) of your CPU,
+and discrete graphics (dGPU). The main advantage is that integrated graphics
+should (but not necessarily) only be used for low-profile tasks, such as
+surfing the Internet, watching videos, etc. And discrete graphics are used for
+high-performance things like gaming, editing, 3D modeling, and so on.
+Consequently, if two GPUs share "big" and "small" tasks, then if we have only
+"small" tasks running at the moment, we don't need to use our dGPU, so it can
+simply be disabled (as if asleep), thereby significantly reducing power
+consumption. This way when our dGPU is needed again (we run an application
+using it), it will wake up and start working.
+
+It sounds good on paper, as it allows modern laptops to balance low power
+consumption while leaving the ability to engage high-performance graphics, but
+in practice there are a lot of problems. Obvious problem No. 1, which lies in
+concept: Which GPU will do the output to screen? There are several variations
+here:
+
+1. (MUXless) The most common case is when the integrated graphics completely
+   control your (at least) internal display. This leads to the fact that
+   firstly: you can not completly turn off iGPU, because it is responsible for
+   output on internal display. Secondly, and more terribly, dGPU can't output
+   anything directly to the screen, forcing the iGPU to be used as a buffer to
+   which rendered frames for displaying on the screen go. As it turned out in
+   practice, this is the source of most problems. Because there is an overhead
+   of copying frames from dGPU to iGPU, and also iGPU and dGPU can be
+   controlled by different drivers, which may not want to be friends with each
+   other at all (hello Linux).
+
+2. (MUXed) The best case (which of course is less common) is when you have a
+   special multiplexer - MUX. The MUX, is controlling for which GPU will
+   display the image on the screen. We will not go into the details of its
+   work, but simply say that with it both GPUs can now directly output an
+   image. Unfortunately, laptops with MUX are much rarer and usually more
+   expensive.
+
+3. (MUXed) There is also another option in which you already have two MUX. One
+   MUX controls the output on the built-in screen, the second MUX controls the
+   image output on the external display (ports).
+
+For a better understanding, take a look at this picture.
+
+![hyrbid-graphics](https://github.com/ventureoo/nvidia-tweaks/assets/92667539/2332379d-56c8-4771-b6d4-a1fa0060efaf)
+
+Now that we have understood the concept, we can look at how it works in Linux
+now.
+
+PRIME is a unifying technology for working with different sets of hybrid
+graphics in Linux, like NVIDIA Optimus/AMD Dynamic Switchable Graphics. PRIME
+Offload is an implementation of the idea of moving the execution of render from
+one GPU to another in Linux. PRIME support in a closed NVIDIA driver actually
+started only with the 435.17 driver. So if you are a user of the outdated 390xx
+or even 340xx driver branches, PRIME will not work for you. Note that I also
+strongly discourage you from using outdated ways to handle hybrid graphics,
+such as nvidia-xrun or Bumblebee. They are obsolete and unsupported (Bumblebee
+has not been updated for over 8 years), run solely on hacks and have low
+performance. At the same time the Nouveau driver supports PRIME Offload, which
+can be an alternative for older dGPUs.
+
+So, the good news about PRIME Offload is that you should already have it
+working out of the box (yes, manual configuration of xorg.conf is not required
+on the latest driver versions, since many options are already enabled by
+default), under two conditions:
+
+1. All NVIDIA driver modules are properly installed and loaded. Most of the
+   problems with PRIME occur here because some people don't know that their
+   dGPU is not properly serviced. On a desktop PC, the modules leak to a black
+   screen at boot time, but on laptops it will just cause your system to rely
+   entirely on the iGPU. So trying to use PRIME Offload will result in an
+   error. You can check that all modules are loaded with ``lsmod | grep
+   nvidia`` and also with ``lspci -k``. One of the common reasons why NVIDIA
+   modules may not boot is that Secure Boot is enabled in your UEFI, so it is
+   recommended to disable it (or to sign modules and kernel, but this is beyond
+   the scope of this guide).
+
+2. You have the option ``nvidia-drm.modeset=1`` enabled. This is also very
+   important because even if you have the driver properly installed and
+   working, without this option PRIME and some other features (such as Wayland,
+   DMA-BUFs) simply will not work.
+
+3. Don't use DDX drivers like ``xf86-video-intel`` and ``xf86-video-amdgpu``.
+   ``xf86-video-intel`` is an obsolete driver that can cause many issues and
+   glitches in rendering your desktop. ``xf86-video-amdgpu``, although
+   supported, doesn't support PRIME Synchronization technology
+   (https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu/-/issues/11),
+   which can cause tearing on laptops. Instead it is better to use the built-in
+   DDX driver modesetting which requires no further setup, you just need to
+   uninstall the old DDX drivers from system then modesetting started using.
+
+To check that PRIME Offload is working correctly, you need to use the following
+set of environment variables:
+
+```
+# If the glxinfo command is not found, install mesa-utils
+__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia glxinfo | grep vendor
+```
+
+In the last two, the dGPU driver is set as the OpenGL/Vulkan provider used,
+respectively.
+
+If the output of the command indicates to you the mention of your NVIDIA card,
+and without specifying the environment variables an integrated graphics, then
+everything is fine. This means you have the Reserve PRIME mode set up and
+working correctly.
+
+Note that the above environment variables can be replaced by the ``prime-run``
+command in Arch-based distributions. Essentially ``prime-run`` is just a wrapper
+script over these variables, but it is much more convenient to write prime-run
+than a large set of environment variables.
+
+Also note that on most systems running Vulkan applications and games that use
+Vulkan via DXVK/vkd3d-proton by default will cause your dGPU to be used. You
+can check this by running ``vkcube`` without any variables.
+
+If not, you will probably have to specify the use of PRIME Offload either in
+the Lutris settings (in the "Global options" section) or specify above
+variables in the Steam game "Properties", remembering to add the ``%command%``
+delimiter at the end, for example:
+
+```
+prime-run %command%
+```
+
+Or if you're not on the Arch-based system:
+
+```
+__NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia %command%
+```
+
+Please note that some features of discrete graphics in this mode are somewhat
+reduced. So, you will not be able to configure your monitors via
+nvidia-settings as it was indicated in the previous section, because iGPU are
+responsible for connecting and maintaining internal display (only if you have a
+MUXless laptop) and external monitors. The possibility of overclocking and
+manual power management of a dGPU is also excluded.
+
+But the main issue with PRIME is the performance of external monitors. The
+thing is, as stated in beginning, the main display of laptop is controlled by
+iGPU. But external ports can be controlled by either dGPU or iGPU depending on
+your laptop. In case they are controlled by the iGPU, you may be fine. But if
+dGPU is used to control the external display, then problems begin.
+
+Your external monitor may be artfect, or very slow. It's worth noting that this
+isn't really an Nvidia driver issue, but also in compositors, as they aren't
+very good at handling these situations, since the implication is that you only
+have one GPU to manage all the displays. When multiple displays are handled by
+different GPUs the compositor doesn't always know what to do.
+
+Some people recommend using dGPU as the default GPU in this case, but I'm not
+really in favor of this solution as it kills your laptop's power savings and on
+MUXless configurations still causes frames to be copied to the iGPU.
+
+My advice is to just wait for modern compositors to fix these issues. Some work
+is already being done on this in GNOME and KDE:
+
+https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3304
+https://bugs.kde.org/show_bug.cgi?id=452219
+
+In Plasma 6, this issue will probably already be fixed by using the latest 550
+driver and EGL_ANDROID_native_fence_fd extension in KWin (its support added by
+Nvidia since 545).
+
+GNOME users may be partially helped by these environment variables:
+
+```shell
+CLUTTER_PAINT=disable-dynamic-max-render-time
+COGL_DEBUG=sync-frame
+```
