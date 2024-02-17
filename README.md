@@ -480,21 +480,22 @@ default), under two conditions:
    recommended to disable it (or to sign modules and kernel, but this is beyond
    the scope of this guide).
 
-2. You have the option ``nvidia-drm.modeset=1`` enabled. This is also very
-   important because even if you have the driver properly installed and
+2. You have the option ``nvidia-drm.modeset=1`` enabled. This is also **very
+   important** because even if you have the driver properly installed and
    working, without this option PRIME and some other features (such as Wayland,
-   DMA-BUFs) simply will not work.
+   DMA-BUFs) simply will not work. See previous instructions to enable this
+   option.
 
 3. Don't use DDX drivers like ``xf86-video-intel`` and ``xf86-video-amdgpu``.
    ``xf86-video-intel`` is an obsolete driver that can cause many issues and
-   glitches in rendering your desktop. ``xf86-video-amdgpu``, although
-   supported, doesn't support PRIME Synchronization technology
+   glitches in rendering your desktop. ``xf86-video-amdgpu``, although it's
+   actively maintained, doesn't support PRIME Synchronization technology
    (https://gitlab.freedesktop.org/xorg/driver/xf86-video-amdgpu/-/issues/11),
    which can cause tearing on laptops. Instead it is better to use the built-in
    DDX driver modesetting which requires no further setup, you just need to
    uninstall the old DDX drivers from system then modesetting started using.
 
-To check that PRIME Offload is working correctly, you need to use the following
+To check that PRIME Offload is working properly, you need to use the following
 set of environment variables:
 
 ```
@@ -505,7 +506,7 @@ __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRA
 In the last two, the dGPU driver is set as the OpenGL/Vulkan provider used,
 respectively.
 
-If the output of the command indicates to you the mention of your NVIDIA card,
+If the output of the command indicates to you mention of your NVIDIA card,
 and without specifying the environment variables an integrated graphics, then
 everything is fine. This means you have the Reserve PRIME mode set up and
 working correctly.
@@ -528,7 +529,7 @@ delimiter at the end, for example:
 prime-run %command%
 ```
 
-Or if you're not on the Arch-based system:
+Or (if you're not on the Arch-based system):
 
 ```
 __NV_PRIME_RENDER_OFFLOAD=1 __VK_LAYER_NV_optimus=NVIDIA_only __GLX_VENDOR_LIBRARY_NAME=nvidia %command%
@@ -542,7 +543,7 @@ MUXless laptop) and external monitors. The possibility of overclocking and
 manual power management of a dGPU is also excluded.
 
 But the main issue with PRIME is the performance of external monitors. The
-thing is, as stated in beginning, the main display of laptop is controlled by
+thing is, as stated in the beginning, main display of laptop is controlled by
 iGPU. But external ports can be controlled by either dGPU or iGPU depending on
 your laptop. In case they are controlled by the iGPU, you may be fine. But if
 dGPU is used to control the external display, then problems begin.
@@ -561,6 +562,7 @@ My advice is to just wait for modern compositors to fix these issues. Some work
 is already being done on this in GNOME and KDE:
 
 https://gitlab.gnome.org/GNOME/mutter/-/merge_requests/3304
+
 https://bugs.kde.org/show_bug.cgi?id=452219
 
 In Plasma 6, this issue will probably already be fixed by using the latest 550
