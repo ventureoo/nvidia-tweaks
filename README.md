@@ -571,9 +571,4 @@ In Plasma 6, this issue will probably already be fixed by using the latest 550
 driver and EGL_ANDROID_native_fence_fd extension in KWin (its support added by
 Nvidia since 545).
 
-GNOME users may be partially helped by these environment variables:
-
-```shell
-CLUTTER_PAINT=disable-dynamic-max-render-time
-COGL_DEBUG=sync-frame
-```
+Gnome users should switch to using version 46.1+ where this has been fixed.
