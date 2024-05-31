@@ -114,6 +114,8 @@ There are also tweaks as an option:
   - As an alternative, there is [nvlax](https://github.com/illnyang/nvlax).
     Unlike nvidia-patch, it can be used for any driver version.
 - Power Setup (PowerMizer)
+  - **WARNING**: PowerMizer options doesn't work anymore
+  after 530.41.03 update. You can only use these parameters on driver versions lower than 530, that is, on the 470.xx and 390.xx legacy branches. Read more here: https://forums.developer.nvidia.com/t/kernel-module-option-nvreg-registrydwords-for-powermizerenable-doesnt-work-on-530-41-03/247610
   - Another kernel module parameter of the `RegistryDwords` driver allows you
     to configure the GPU power supply. To be more precise, configure the driver
     power manager - PowerMizer.
