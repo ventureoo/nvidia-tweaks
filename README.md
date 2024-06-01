@@ -575,3 +575,9 @@ driver and EGL_ANDROID_native_fence_fd extension in KWin (its support added by
 Nvidia since 545).
 
 Gnome users should switch to using version 46.1+ where this has been fixed.
+
+### System hangs when using 550 driver
+
+If you notice system hangs when using driver 550 and above, try switching to
+using open NVIDIA modules. This is a known issue, see here:
+https://forums.developer.nvidia.com/t/series-550-freezes-laptop/284772/168
