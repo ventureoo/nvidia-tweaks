@@ -347,6 +347,9 @@ applications/games with nvidia-settings or using Lutris/Steam.
 
 ## GSP firmware
 
+**NOTE:** Starting with version 555.42.02, the use of GSP firmware is enabled
+by default on GPUs where it is supported.
+
 GSP (GPU System Processor) - this is a special chip which is present on NVIDIA
 video cards starting from Turing and above, which offloads GPU initialization
 and control tasks, which are usually performed on CPU. This should improve
