@@ -84,6 +84,15 @@ module. Including the following things we need to change:
 
   **Note**: It is possible to use more VRAM (?)
 
+- ``nvidia_drm.modeset=1`` - enables modesetting support for the NVIDIA driver.
+  Critical for Wayland support and proper PRIME Offload operation. **Be sure to
+  enable**.
+
+- ``nvidia_drm.fbdev=1`` - enables hardware framebuffer support. Allows to use
+  native display resolution in tty. This option has no effect on PRIME laptops,
+  as the framebuffer is handled by the integrated graphics. This parameter is
+  marked as experimental, so bugs may occur.
+
 Then we install udev rules from negative17
 (https://github.com/negativo17/nvidia-kmod-common/blob/master/60-nvidia.rules).
 These udev rules are required for node presence and runtime PM and fixes
