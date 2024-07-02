@@ -48,7 +48,6 @@ copy all necessary configuration files:
 git clone https://www.github.com/ventureoo/nvidia-tweaks.git
 cd nvidia-tweaks
 sudo cp nvidia-tweaks.conf /etc/modprobe.d/nvidia-tweaks.conf
-sudo cp nvidia-uvm.conf /etc/modules-load.d/
 sudo cp 60-nvidia.rules /etc/udev/rules.d/
 ```
 
@@ -106,10 +105,6 @@ https://github.com/archlinux/svntogit-packages/commit/3c0985a523c8795a483f3c63d1
 But for other distributions this may still be necessary. Also, the packages for
 Arch appear to have an incomplete set of rules, so installing them may still be
 useful.
-
-Installing `nvidia-uvm.conf` in `/etc/modules-load.d/` together with udev rules
-also fixes a common issue with nvidia-uvm module loading, which can break CUDA,
-including NVENC.
 
 There are also tweaks as an option:
 
