@@ -240,31 +240,28 @@ use tools such as xrandr and [picom](https://github.com/yshui/picom).
 Currently, starting with driver branch 515 and higher, NVIDIA has support for
 GBM API, which made it possible to run Sway and wlroots-like window managers,
 and also significantly improved Wayland sessions in GNOME/KDE Plasma.
-~~However, this implementation still has a number of problems, the main one
-being flickering when using XWayland/OpenGL acceleration in applications. As
-described
-[here](https://forums.developer.nvidia.com/t/nvidia-495-on-sway-tutorial-questions-arch-based-distros/192212/78),
-this problem is caused by the fact that the NVIDIA driver only supports the new
-OpenGL explicit sync instead of implicit sync. So I recommend you to use only
-native support in Wayland applications wherever possible, and avoid OpenGL
-acceleration. It looks pretty ridiculous, but it's a workable solution. With
-the Vulkan backend in Sway I haven't found any obvious problems with
-rendering.~~ The information above is out of date. Artifacts and blinks have
-been fixed in sway-git/wlroots-git, please build them from AUR and install the
-latest driver (525+). There is no need to use Vulkan. I would also like to
-point out that GNOME Wayland and Plasma Wayland are now working at a pretty
-good level, it's not perfect, but progress is significant. So, here's a set of
-environment variables to help you  on NVIDIA using Wayland:
+
+Most of the flickering and artifact issues on Nvidia have been fixed with the
+introduction of Explicit sync [1], which has been supported in the Nvidia
+driver since branch 555, so it is strictly recommended to use the latest
+version of driver on Wayland. Note that support for explicit sync on the
+compositor side was added in KDE Plasma 6.1 and GNOME 46.2.
+
+Support for explicit sync in sway/wlroots is very recent, so you should build
+sway-git and wlroots-git from AUR. Note that explicit sync support has not yet
+been implemented for the Vulkan backend [2]. I would also like to point out
+that GNOME Wayland and Plasma Wayland are now working at a pretty good level,
+it's not perfect, but progress is significant. For gamers I would also
+recommend using the native Wayland driver in Wine, this achieves less lag input
+and avoids Xwayland issues. So, here's a set of environment variables to help
+you on NVIDIA using Wayland:
 
 ```
 SDL_VIDEODRIVER=wayland # Can break some native games
-XDG_SESSION_TYPE=wayland
-QT_QPA_PLATFORM="wayland;xcb"
+QT_QPA_PLATFORM="wayland;xcb" # Only for Qt 5 apps
 MOZ_DBUS_REMOTE=1 # For shared clipboard with Xwayland apps
-MOZ_ENABLE_WAYLAND=1 # Not needed after Firefox 121+
 GBM_BACKEND=nvidia-drm
 WLR_NO_HARDWARE_CURSORS=1
-KITTY_ENABLE_WAYLAND=1
 _JAVA_AWT_WM_NONREPARENTING=1
 ```
 
@@ -294,6 +291,9 @@ This will also allow you to avoid some sleeping issues on Wayland.
 >  On laptops with PRIME enabling ``NVreg_PreserveVideoMemoryAllocations=1``
 >  may cause issues with sleep. Therefore it is recommended to use it only on
 >  desktop PCs.
+
+[1] - https://github.com/NVIDIA/egl-wayland/pull/104
+[2] - https://gitlab.freedesktop.org/wlroots/wlroots/-/merge_requests/4768
 
 ## Environment variables
 
