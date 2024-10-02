@@ -118,8 +118,9 @@ There are also tweaks as an option:
   - As an alternative, there is [nvlax](https://github.com/illnyang/nvlax).
     Unlike nvidia-patch, it can be used for any driver version.
 - Power Setup (PowerMizer)
-  - **WARNING**: PowerMizer options doesn't work anymore
-  after 530.41.03 update. You can only use these parameters on driver versions lower than 530, that is, on the 470.xx and 390.xx legacy branches. Read more here: https://forums.developer.nvidia.com/t/kernel-module-option-nvreg-registrydwords-for-powermizerenable-doesnt-work-on-530-41-03/247610
+> [!WARNING]
+> PowerMizer options doesn't work anymore after 530.41.03 update. You can only use these parameters on driver versions lower than 530, that is, on the 470.xx and 390.xx legacy branches.
+> Read more here: https://forums.developer.nvidia.com/t/kernel-module-option-nvreg-registrydwords-for-powermizerenable-doesnt-work-on-530-41-03/247610
   - Another kernel module parameter of the `RegistryDwords` driver allows you
     to configure the GPU power supply. To be more precise, configure the driver
     power manager - PowerMizer.
@@ -289,9 +290,10 @@ described above.
 
 This will also allow you to avoid some sleeping issues on Wayland.
 
-Attention! On laptops with PRIME enabling
-``NVreg_PreserveVideoMemoryAllocations=1`` may cause issues with sleep.
-Therefore it is recommended to use it only on desktop PCs.
+> [!CAUTION]
+>  On laptops with PRIME enabling ``NVreg_PreserveVideoMemoryAllocations=1``
+>  may cause issues with sleep. Therefore it is recommended to use it only on
+>  desktop PCs.
 
 ## Environment variables
 
@@ -345,9 +347,10 @@ https://download.nvidia.com/XFree86/Linux-x86_64/525.78.01/README/openglenvvaria
 limit (``~/.cache/nvidia`` by default).  Recommended for modern games and DXVK
 2.0+, where the cache can reach more than a gigabyte. 
 
-**WARNING:** I strongly advise against specifying the above environment
-variables for the whole system. Please specify them for specific
-applications/games with nvidia-settings or using Lutris/Steam.
+> [!WARNING]
+> I strongly advise against specifying the above environment variables for the
+> whole system. Please specify them for specific applications/games with
+> nvidia-settings or using Lutris/Steam.
 
 ## GSP firmware
 
@@ -377,11 +380,13 @@ GSP Firmware Version                  : 530.41.03
 
 (the output may differ depending on the driver version)
 
-**WARNING:** I strongly suggest forcing the use of GSP firmware only on the
-most recent driver, as the first releases with its support may contain certain
-problems. Only starting from 530 you will have support for suspend and resume
-when using GSP firmware. This feature can also work badly on PRIME
-configurations, so please check dmesg logs for errors if you want to use this.
+> [!WARNING]
+>  I strongly suggest forcing the use of GSP firmware only on the most recent
+>  driver, as the first releases with its support may contain certain problems.
+>  Only starting from 530 you will have support for suspend and resume when
+>  using GSP firmware. This feature can also work badly on PRIME
+>  configurations, so please check dmesg logs for errors if you want to use
+>  this.
 
 See also:
 
