@@ -310,6 +310,10 @@ environment variable is already used in the default NVIDIA profile supplied
 with the driver (``/usr/share/nvidia/nvidia-application-profiles-525.78.01-rc``
 for example).
 
+> [!WARNING]
+> Gamescope crashes when this variable is used:
+> https://github.com/ValveSoftware/gamescope/issues/526#issuecomment-1733739097
+
 [1] - https://www.phoronix.com/review/nvidia_threaded_opts (a very old benchmark)
 
 [2] - https://www.phoronix.com/review/nvidia-t2015-optimizations
