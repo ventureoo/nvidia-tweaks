@@ -25,19 +25,23 @@ https://github.com/lutris/docs/blob/master/InstallingDrivers.md
 
 ### Arch-based systems (AUR)
 
-Arch Linux systems can simply install the nvidia-tweaks package from the AUR.
-This package is independent of the specific driver version and can be used for
-any driver package. It is only necessary that the driver is installed (NVIDIA
-MODULE is provided).
 
-```
-git clone https://aur.archlinux.org/nvidia-tweaks.git
-cd nvidia-tweaks
-makepkg -sric
-```
+> [!WARNING]
+> The AUR package was removed for the following reasons:
+>
+> I am discontinuing maintenance of this package and recommend that everyone remove it from their system. Most of the “tweaks” that are provided within this package are already part of the nvidia-utils package upstream, so you no longer need the following things because you get them with the nvidia-utils package:
+>
+> - Enabling nvidia-drm.modeset=1 and nvidia-drm.fbdev=1 in nvidia.conf. This is now enabled by default in nvidia-utils as a patch and ensures Wayland/PRIME configurations work properly. For users of “older” driver branches like nvidia-390xx-dkms and nvidia-470xx-dkms this is still relevant, but since these versions do not fully support Wayland sessions, enabling nvidia-drm.modeset=1 for them is only relevant for running PRIME configurations. Contact the maintainers of these packages to have them enable this by default, as it is quite useful for laptops.
+> - Using udev 60-nvidia.rules. I've been doing the work of upstreaming some of these rules in nvidia-utils: https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/merge_requests/9, so you don't need to worry about them anymore, only if you're not using the nvidia-390xx-dkms and nvidia-470xx-dkms packages. Again, contact the maintainers of those packages if you want them to sync with changes in the nvidia-utils package upstream. The rest of the rules regarding power management remain relevant only for Turing generation mobile GPUs. Be warned that RTD3 does NOT work with open source versions of driver modules (nvidia-open-dkms) on Turing generation.
+> -  The power schemes provided by _powermizer_scheme no longer work with newer driver versions because NVIDIA broke them starting with the 530 driver: https://forums.developer.nvidia.com/t/kernel-module-option-nvreg-registrydwords-for-powermizerenable-doesnt-work-on-530-41-03/247610. Not sure about _override_max_perf.
+> -  Hooks for mkinitcpio are no longer needed, as they are now automatically run by mkinitcpio itself when installing any kernel modules:
+>
+> https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/merge_requests/392
+>
+> https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/merge_requests/256
+>
+> For those who installed this package for the benefit of nvidia-patch, please refer to the nvidia-patch package (https://aur.archlinux.org/packages/nvidia-patch). The remaining Nvidia module parameters such as NVreg_UsePageAttributeTable=1 and NVreg_InitializeSystemMemoryAllocations=0 are still valid and you can set them yourself in `/etc/modprobe.d/nvidia.conf. I will also still maintain the rest of the theoretical material in the GitHub repository.
 
-You can also edit the PKGBUILD before installing it to include some additional
-settings, which we will talk about later.
 
 ### Other distros
 
