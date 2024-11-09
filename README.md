@@ -420,6 +420,29 @@ that's all right and you can use the kernel parameter specified above:
 (P.S. For some reason, the ``Resizable Bar`` column is not shown in
 nvidia-settings in the Wayland session)
 
+## Partial unlocking of TDP limit on laptops with Ampere GPUs and higher
+
+Unfortunately on new driver versions it is not possible to set the TDP limit
+manually via nvidia-smi. But for users of laptops with GPU Ampere generation
+(RTX 30xx) and higher, there is a workaround that partially solves the issue by
+slightly increasing the TDP limit. For this purpose, you just need to enable
+the ``nvidia-powerd`` service, which enables Dynamic Boost technology:
+
+```
+ sudo systemctl enable nvidia-powerd
+```
+
+For example on a laptop with a 3050 Mobile this allows you to raise dynamically
+(i.e. depending on system load) raise the TDP limit from 35W to 40W, without
+significant temperature changes.
+
+Note that Dynamic Boost technology only works when the laptop is running on AC
+power and also affects CPU performance by changing the maximum frequency.
+
+See more:
+
+https://download.nvidia.com/XFree86/Linux-x86_64/565.57.01/README/dynamicboost.html
+
 ## Hybrid graphics (NVIDIA Optimus)
 
 All sorts of fun :)
