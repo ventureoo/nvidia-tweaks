@@ -423,7 +423,7 @@ nvidia-settings in the Wayland session)
 ## Partial unlocking of TDP limit on laptops with Ampere GPUs and higher
 
 Unfortunately on new driver versions it is not possible to set the TDP limit
-manually via nvidia-smi. But for users of laptops with GPU Ampere generation
+manually via nvidia-smi. But for users of laptops with Ampere generation GPUs
 (RTX 30xx) and higher, there is a workaround that partially solves the issue by
 slightly increasing the TDP limit. For this purpose, you just need to enable
 the ``nvidia-powerd`` service, which enables Dynamic Boost technology:
@@ -433,7 +433,7 @@ the ``nvidia-powerd`` service, which enables Dynamic Boost technology:
 ```
 
 For example on a laptop with a 3050 Mobile this allows you to raise dynamically
-(i.e. depending on system load) raise the TDP limit from 35W to 40W, without
+(i.e. depending on system load) the TDP limit from 35W to 40W, without
 significant temperature changes.
 
 Note that Dynamic Boost technology only works when the laptop is running on AC
