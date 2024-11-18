@@ -443,6 +443,18 @@ See more:
 
 https://download.nvidia.com/XFree86/Linux-x86_64/565.57.01/README/dynamicboost.html
 
+## Firejail + NVIDIA
+
+For 3D acceleration to work properly via NVIDIA GPU inside Firejail starting
+with the 550.xx driver and above, you need to add the following lines to your
+``~/.config/firejail/globals.local``:
+
+```
+noblacklist /sys/module
+whitelist /sys/module/nvidia*
+read-only /sys/module/nvidia*
+```
+
 ## Hybrid graphics (NVIDIA Optimus)
 
 All sorts of fun :)
