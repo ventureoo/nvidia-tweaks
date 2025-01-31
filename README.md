@@ -93,8 +93,9 @@ module. Including the following things we need to change:
 
 - ``nvidia_drm.fbdev=1`` - enables hardware framebuffer support. Allows to use
   native display resolution in tty. This option has no effect on PRIME laptops,
-  as the framebuffer is handled by the integrated graphics. This parameter is
-  marked as experimental, so bugs may occur.
+  as the framebuffer is handled by the integrated graphics. ~~This parameter is
+  marked as experimental, so bugs may occur.~~ After 570.xx, this parameter is
+  enabled by default and is no longer experimental.
 
 Then we install udev rules from negative17
 (https://github.com/negativo17/nvidia-kmod-common/blob/master/60-nvidia.rules).
@@ -116,9 +117,6 @@ There are also tweaks as an option:
   - This patch removes restriction on maximum number of simultaneous NVENC
     video encoding sessions imposed by Nvidia to consumer-grade GPUs. You can
     read more about it here: https://github.com/keylase/nvidia-patch
-  - In the AUR package, you can get it by enabling the option in PKGBUILD:
-    `_nvidia_patch=y`. No additional actions are required, the patch is applied
-    automatically by the pacman hook.
   - As an alternative, there is [nvlax](https://github.com/illnyang/nvlax).
     Unlike nvidia-patch, it can be used for any driver version.
 - Power Setup (PowerMizer)
@@ -204,9 +202,7 @@ is necessary to perform an installation of a separate compositor like Picom.
 Now it is good enough, the most important thing is to add it to the autostart
 with the following options to start it:
 
-``picom --experimental-backends --backend glx --vsync``
-
-**Note:** ``--experimental-backends`` is not required as of v10 picom. 
+``picom --backend glx --vsync``
 
 For Xfce, you must get rid of the problematic default compositor before using
 Picom:
@@ -249,16 +245,14 @@ Most of the flickering and artifact issues on Nvidia have been fixed with the
 introduction of Explicit sync [1], which has been supported in the Nvidia
 driver since branch 555, so it is strictly recommended to use the latest
 version of driver on Wayland. Note that support for explicit sync on the
-compositor side was added in KDE Plasma 6.1 and GNOME 46.2.
+compositor side was added in KDE Plasma 6.1 and GNOME 46.2, sway 1.10 or anoter
+wlroots-based compositor that using at least wlroots 0.18.
 
-Support for explicit sync in sway/wlroots is very recent, so you should build
-sway-git and wlroots-git from AUR. Note that explicit sync support has not yet
-been implemented for the Vulkan backend [2]. I would also like to point out
-that GNOME Wayland and Plasma Wayland are now working at a pretty good level,
-it's not perfect, but progress is significant. For gamers I would also
-recommend using the native Wayland driver in Wine, this achieves less lag input
-and avoids Xwayland issues. So, here's a set of environment variables to help
-you on NVIDIA using Wayland:
+I would also like to point out that GNOME Wayland and Plasma Wayland are now
+working at a pretty good level, it's not perfect, but progress is significant.
+For gamers I would also recommend using the native Wayland driver in Wine, this
+achieves less lag input and avoids Xwayland issues. So, here's a set of
+environment variables to help you on NVIDIA using Wayland:
 
 ```
 SDL_VIDEODRIVER=wayland # Can break some native games
@@ -278,9 +272,6 @@ on NVIDIA. ~~Browsers on QtWebEngine such as qutebrowser unfortunately do not
 work either.~~ QtWebEngine works if you use ``QT_QUICK_BACKEND=software``
 environment variable.
 
-For the wlroots Vulkan backend to work, also make sure that you are using the
-NVIDIA Vulkan beta driver (to support the required Vulkan extensions).
-
 If you do not have a Wayland session to choose from in GDM, then include the
 ``NVreg_PreserveVideoMemoryAllocations=1`` parameter to the ones we already
 described above.
@@ -297,7 +288,6 @@ This will also allow you to avoid some sleeping issues on Wayland.
 >  desktop PCs.
 
 [1] - https://github.com/NVIDIA/egl-wayland/pull/104
-[2] - https://gitlab.freedesktop.org/wlroots/wlroots/-/merge_requests/4768
 
 ## Environment variables
 
@@ -363,38 +353,18 @@ limit (``~/.cache/nvidia`` by default).  Recommended for modern games and DXVK
 ## GSP firmware
 
 **NOTE:** Starting with version 555.42.02, the use of GSP firmware is enabled
-by default on GPUs where it is supported.
+by default on GPUs where it is supported. In open source versions of the NVIDIA
+driver modules, GSP is always used and you cannot disable it.
 
 GSP (GPU System Processor) - this is a special chip which is present on NVIDIA
 video cards starting from Turing and above, which offloads GPU initialization
 and control tasks, which are usually performed on CPU. This should improve
 performance and reduce the load on the CPU.
 
-To check if the GSP firmware is currently in use, use the following command:
-
-```
- nvidia-smi -q | grep GSP
-```
-
-By default, GSP firmware is enabled only for a limited number of GPUs. But if
-you have GPU of Turing generation and above, you can also force their use via
-the parameter for the ``NVreg_EnableGpuFirmware=1`` kernel module. Add this
-parameter as we did above with others, after rebooting you should get the
-following output:
-
-```
-GSP Firmware Version                  : 530.41.03
-```
-
-(the output may differ depending on the driver version)
-
-> [!WARNING]
->  I strongly suggest forcing the use of GSP firmware only on the most recent
->  driver, as the first releases with its support may contain certain problems.
->  Only starting from 530 you will have support for suspend and resume when
->  using GSP firmware. This feature can also work badly on PRIME
->  configurations, so please check dmesg logs for errors if you want to use
->  this.
+Some users report issues when using GSP, such as minor performance drops. You
+can disable GSP using the ``NVreg_EnableGpuFirmware=0`` option by adding it to
+the ``/etc/modprobe.d/nvidia.conf`` config.  Note that this parameter works
+only for closed driver modules.
 
 See also:
 
@@ -454,6 +424,14 @@ noblacklist /sys/module
 whitelist /sys/module/nvidia*
 read-only /sys/module/nvidia*
 ```
+
+## Low-latency frame presentation mode
+
+Starting with the 570.xx driver, the NVIDIA driver has a so-called low-latency
+display mode, which allows you to get latency close to the vblank value. You
+can enable this mode by adding ``NVreg_RegistryDwords=RMIntrLockingMode=1`` to
+your modprobe configuration for the nvidia module. Note that this is
+experimental and may have potential issues.
 
 ## Hybrid graphics (NVIDIA Optimus)
 
