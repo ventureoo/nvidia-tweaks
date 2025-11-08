@@ -10,7 +10,7 @@ options).
 In other words, this project doesn't contain anything you can't do yourself,
 but just simplifies the process and stores a lot of information.
 
-## Installation
+## Driver installation
 
 First of all, you must have the NVIDIA driver itself installed and loaded in
 order for this tweak kit to work. Without it, no further action is meaningful.
@@ -23,30 +23,10 @@ Specific instructions on how to install the driver can be found here:
 
 https://github.com/lutris/docs/blob/master/InstallingDrivers.md
 
-### Arch-based systems (AUR)
+### Copying configuration
 
-
-> [!WARNING]
-> The AUR package was removed for the following reasons:
->
-> I am discontinuing maintenance of this package and recommend that everyone remove it from their system. Most of the “tweaks” that are provided within this package are already part of the nvidia-utils package upstream, so you no longer need the following things because you get them with the nvidia-utils package:
->
-> - Enabling nvidia-drm.modeset=1 and nvidia-drm.fbdev=1 in nvidia.conf. This is now enabled by default in nvidia-utils as a patch and ensures Wayland/PRIME configurations work properly. For users of “older” driver branches like nvidia-390xx-dkms and nvidia-470xx-dkms this is still relevant, but since these versions do not fully support Wayland sessions, enabling nvidia-drm.modeset=1 for them is only relevant for running PRIME configurations. Contact the maintainers of these packages to have them enable this by default, as it is quite useful for laptops.
-> - Using udev 60-nvidia.rules. I've been doing the work of upstreaming some of these rules in nvidia-utils: https://gitlab.archlinux.org/archlinux/packaging/packages/nvidia-utils/-/merge_requests/9, so you don't need to worry about them anymore, only if you're not using the nvidia-390xx-dkms and nvidia-470xx-dkms packages. Again, contact the maintainers of those packages if you want them to sync with changes in the nvidia-utils package upstream. The rest of the rules regarding power management remain relevant only for Turing generation mobile GPUs. Be warned that RTD3 does NOT work with open source versions of driver modules (nvidia-open-dkms) on Turing generation.
-> -  The power schemes provided by _powermizer_scheme no longer work with newer driver versions because NVIDIA broke them starting with the 530 driver: https://forums.developer.nvidia.com/t/kernel-module-option-nvreg-registrydwords-for-powermizerenable-doesnt-work-on-530-41-03/247610. Not sure about _override_max_perf.
-> -  Hooks for mkinitcpio are no longer needed, as they are now automatically run by mkinitcpio itself when installing any kernel modules:
->
-> https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/merge_requests/392
->
-> https://gitlab.archlinux.org/archlinux/mkinitcpio/mkinitcpio/-/merge_requests/256
->
-> For those who installed this package for the benefit of nvidia-patch, please refer to the nvidia-patch package (https://aur.archlinux.org/packages/nvidia-patch). The remaining Nvidia module parameters such as NVreg_UsePageAttributeTable=1 and NVreg_InitializeSystemMemoryAllocations=0 are still valid and you can set them yourself in `/etc/modprobe.d/nvidia.conf. I will also still maintain the rest of the theoretical material in the GitHub repository.
-
-
-### Other distros
-
-There are no packages for other distributions yet. However, you can manually
-copy all necessary configuration files:
+There are no packages for distributions yet. However, you can manually copy all
+necessary configuration files:
 
 ```
 git clone https://www.github.com/ventureoo/nvidia-tweaks.git
@@ -58,7 +38,7 @@ sudo cp 60-nvidia.rules /etc/udev/rules.d/
 The keylase nvidia-patch requires a separate installation. You can read about
 it on the project site: https://github.com/keylase/nvidia-patch
 
-## So, how does it work?
+## Common tweaks
 
 First, we configure the kernel modules of the NVIDIA driver (`nvidia.conf`).
 The thing is that by default, not all parameters are enabled in the driver
@@ -76,6 +56,7 @@ module. Including the following things we need to change:
   See also:
   
   https://bbs.archlinux.org/viewtopic.php?id=242007,
+
   https://old.reddit.com/r/linux_gaming/comments/9wjpkz/poor_gaming_performance_is_this_a_cpu_or_gpu/
 
 - NVreg_InitializeSystemMemoryAllocations (Default 1) - Disables clearing
@@ -89,13 +70,13 @@ module. Including the following things we need to change:
 
 - ``nvidia_drm.modeset=1`` - enables modesetting support for the NVIDIA driver.
   Critical for Wayland support and proper PRIME Offload operation. **Be sure to
-  enable**.
+  enable**. Many distributions already enable this option by default, but this may be
+  needed on older versions of the driver like 470.xx.
 
 - ``nvidia_drm.fbdev=1`` - enables hardware framebuffer support. Allows to use
   native display resolution in tty. This option has no effect on PRIME laptops,
-  as the framebuffer is handled by the integrated graphics. ~~This parameter is
-  marked as experimental, so bugs may occur.~~ After 570.xx, this parameter is
-  enabled by default and is no longer experimental.
+  as the framebuffer is handled by the integrated graphics. After 570.xx, this
+  parameter is enabled by default and is no longer experimental.
 
 Then we install udev rules from negative17
 (https://github.com/negativo17/nvidia-kmod-common/blob/master/60-nvidia.rules).
@@ -163,10 +144,8 @@ There are also tweaks as an option:
   - **Works only for laptops.**
   
 All of the optional tweaks mentioned above should be applied according to your
-preferences. For a package from the AUR, they are applied through the
-corresponding options in PKGBUILD. For other distributions this will probably
-require editing `/etc/modprobe.d/nvidia-tweaks.conf` and adding the appropriate
-parameters.
+preferences. This will probably require editing
+`/etc/modprobe.d/nvidia-tweaks.conf` and adding the appropriate parameters.
 
 ## Some tips from me
 
@@ -193,7 +172,7 @@ ForceFullCompositionPipeline breaks VK_KHR_present_wait, which affects many
 games (See: https://github.com/ValveSoftware/Proton/issues/6869).
 
 So I recommend everyone to use the first way whenever possible. At the moment,
-all modern DEs and consequently the composers attached to them are good at
+all modern DEs and consequently compositors attached to them are good at
 solving this issue. Particularly GNOME and since version 5.21 of Plasma no
 longer have any problems (the main thing is to switch the rendering backend to
 OpenGL). However, for all less modern environments such as Xfce and Mate, and
@@ -430,8 +409,9 @@ read-only /sys/module/nvidia*
 Starting with the 570.xx driver, the NVIDIA driver has a so-called low-latency
 display mode, which allows you to get latency close to the vblank value. You
 can enable this mode by adding ``NVreg_RegistryDwords=RMIntrLockingMode=1`` to
-your modprobe configuration for the nvidia module. Note that this is
-experimental and may have potential issues.
+your modprobe configuration for the nvidia module.
+
+Note that this is enabled by default since 580.xx driver.
 
 ## Hybrid graphics (NVIDIA Optimus)
 
@@ -605,9 +585,3 @@ driver and EGL_ANDROID_native_fence_fd extension in KWin (its support added by
 Nvidia since 545).
 
 Gnome users should switch to using version 46.1+ where this has been fixed.
-
-### System hangs when using 550 driver
-
-If you notice system hangs when using driver 550 and above, try switching to
-using open NVIDIA modules. This is a known issue, see here:
-https://forums.developer.nvidia.com/t/series-550-freezes-laptop/284772/168
